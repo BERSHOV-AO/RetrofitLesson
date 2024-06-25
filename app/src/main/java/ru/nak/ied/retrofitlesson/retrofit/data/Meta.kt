@@ -1,4 +1,4 @@
-package ru.nak.ied.retrofitlesson.retrofit
+package ru.nak.ied.retrofitlesson.retrofit.data
 
 data class Meta(
     val createdAt: String,
