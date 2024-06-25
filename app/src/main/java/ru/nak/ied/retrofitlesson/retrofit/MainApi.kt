@@ -5,6 +5,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 import ru.nak.ied.retrofitlesson.retrofit.data.Product
+import ru.nak.ied.retrofitlesson.retrofit.data.Products
 import ru.nak.ied.retrofitlesson.retrofit.data.User
 
 // 'https://dummyjson.com/products/1'
@@ -22,4 +23,10 @@ interface MainApi {
     // 'https://dummyjson.com/auth/login'
     @POST("auth/login")
     suspend fun auth(@Body authRequest: AuthRequest): User
+
+    // 'https://dummyjson.com/products'
+    @GET("products")
+    suspend fun getAllProducts(): Products
+
+
 }
