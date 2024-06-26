@@ -13,7 +13,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.nak.ied.retrofitlesson.adapter.ProductAdapter
 import ru.nak.ied.retrofitlesson.databinding.ActivityMainBinding
+import ru.nak.ied.retrofitlesson.retrofit.AuthRequest
 import ru.nak.ied.retrofitlesson.retrofit.MainApi
+import ru.nak.ied.retrofitlesson.retrofit.data.User
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,6 +26,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        supportActionBar?.title = "Гость"
 
         adapter = ProductAdapter()
         binding.rcView.layoutManager = LinearLayoutManager(this)
@@ -44,6 +47,22 @@ class MainActivity : AppCompatActivity() {
             .addConverterFactory(GsonConverterFactory.create()).build()
         val mainApi = retrofit.create(MainApi::class.java)
 
+        //********************************************************************
+        var user: User? = null
+        CoroutineScope(Dispatchers.IO).launch {
+            user = mainApi.auth(
+                AuthRequest(
+                    "emilys",
+                    "emilyspass"
+                )
+            )
+            runOnUiThread {
+                supportActionBar?.title = user?.firstName
+            }
+        }
+
+        //********************************************************************
+
         // setOnQueryTextListener - это наш слушатель
         binding.sv.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             // когда пользователь написал текст и нажал на кнопку поиск,
@@ -54,7 +73,7 @@ class MainActivity : AppCompatActivity() {
                     //val productsObject = mainApi.getProductByName(text)
 
                     // если text не равен null? то запкститься запрос
-                    val productsObject = text?.let { mainApi.getProductByName(it) }
+                    val productsObject = text?.let { mainApi.getProductByNameAuth(user?.token ?: "", it) }
 
                     // по сути запуск обновления экрана
                     runOnUiThread {
