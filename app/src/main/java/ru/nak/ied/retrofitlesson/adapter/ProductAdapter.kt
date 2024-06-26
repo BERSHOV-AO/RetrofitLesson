@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import okhttp3.Protocol
 import ru.nak.ied.retrofitlesson.R
 import ru.nak.ied.retrofitlesson.databinding.ListItemBinding
 import ru.nak.ied.retrofitlesson.retrofit.data.Product

@@ -15,6 +15,10 @@
         android:theme="@style/Theme.RetrofitLesson"
         tools:targetApi="31">
         <activity
+            android:name=".BaseActivity"
+            android:exported="false"
+            android:theme="@style/Theme.RetrofitLesson" />
+        <activity
             android:name=".SecondActivity"
             android:exported="false" />
         <activity
