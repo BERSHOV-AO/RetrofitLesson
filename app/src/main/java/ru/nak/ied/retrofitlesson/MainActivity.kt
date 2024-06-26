@@ -1,6 +1,7 @@
 package ru.nak.ied.retrofitlesson
 
 import android.os.Bundle
+import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.CoroutineScope
@@ -43,16 +44,46 @@ class MainActivity : AppCompatActivity() {
             .addConverterFactory(GsonConverterFactory.create()).build()
         val mainApi = retrofit.create(MainApi::class.java)
 
-        // корутина запустит на второстепенном потоке
-        CoroutineScope(Dispatchers.IO).launch {
-            val productsObject = mainApi.getAllProducts()
+        // setOnQueryTextListener - это наш слушатель
+        binding.sv.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            // когда пользователь написал текст и нажал на кнопку поиск,
+            // сообщение передается в данный метод
+            override fun onQueryTextSubmit(text: String?): Boolean {
+                // корутина запустит на второстепенном потоке
+                CoroutineScope(Dispatchers.IO).launch {
+                    //val productsObject = mainApi.getProductByName(text)
 
-            // по сути запуск обновления экрана
-            runOnUiThread {
-                binding.apply {
-                    adapter.submitList(productsObject.products)
+                    // если text не равен null? то запкститься запрос
+                    val productsObject = text?.let { mainApi.getProductByName(it) }
+
+                    // по сути запуск обновления экрана
+                    runOnUiThread {
+                        binding.apply {
+                            adapter.submitList(productsObject?.products)
+                        }
+                    }
                 }
+                return true
             }
-        }
+
+            // запускаеться каждый раз когда есть изменение в SV, живой поиск
+            override fun onQueryTextChange(text: String?): Boolean {
+//                // корутина запустит на второстепенном потоке
+//                CoroutineScope(Dispatchers.IO).launch {
+//                    //val productsObject = mainApi.getProductByName(text)
+//
+//                    // если text не равен null? то запкститься запрос
+//                    val productsObject = text?.let { mainApi.getProductByName(it) }
+//
+//                    // по сути запуск обновления экрана
+//                    runOnUiThread {
+//                        binding.apply {
+//                            adapter.submitList(productsObject?.products)
+//                        }
+//                    }
+//                }
+                return true
+            }
+        })
     }
 }

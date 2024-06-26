@@ -4,6 +4,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 import ru.nak.ied.retrofitlesson.retrofit.data.Product
 import ru.nak.ied.retrofitlesson.retrofit.data.Products
 import ru.nak.ied.retrofitlesson.retrofit.data.User
@@ -27,6 +28,12 @@ interface MainApi {
     // 'https://dummyjson.com/products'
     @GET("products")
     suspend fun getAllProducts(): Products
+
+    // 'https://dummyjson.com/products/search?q=phone'
+    @GET("products/search")
+    suspend fun getProductByName(@Query("q") name: String): Products
+
+
 
 
 }
