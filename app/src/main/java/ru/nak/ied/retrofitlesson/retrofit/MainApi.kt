@@ -1,5 +1,6 @@
 package ru.nak.ied.retrofitlesson.retrofit
 
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -25,7 +26,7 @@ interface MainApi {
 
     // 'https://dummyjson.com/auth/login'
     @POST("auth/login")
-    suspend fun auth(@Body authRequest: AuthRequest): User
+    suspend fun auth(@Body authRequest: AuthRequest): Response<User>
 
     // 'https://dummyjson.com/products'
     @GET("auth/products")

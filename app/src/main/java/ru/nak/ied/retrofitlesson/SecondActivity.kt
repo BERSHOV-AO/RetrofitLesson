@@ -52,15 +52,15 @@ class SecondActivity : AppCompatActivity() {
                     )
                 )
                 // по сути запуск обновления экрана
-                runOnUiThread {
-                    binding.apply {
-                        //Picasso.get().load(user.image).into(binding.iv)
-                        Picasso.get().load(user.image).into(iv)
-                        firstName.text = user.firstName
-                        lastName.text = user.lastName
-                    }
-                    // binding.text = product.title
-                }
+//                runOnUiThread {
+//                    binding.apply {
+//                        //Picasso.get().load(user.image).into(binding.iv)
+//                        Picasso.get().load(user.image).into(iv)
+//                        firstName.text = user.
+//                        lastName.text = user.lastName
+//                    }
+//                    // binding.text = product.title
+//                }
             }
         }
     }
