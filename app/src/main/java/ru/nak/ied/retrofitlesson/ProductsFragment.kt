@@ -7,10 +7,22 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import ru.nak.ied.retrofitlesson.adapter.ProductAdapter
 import ru.nak.ied.retrofitlesson.databinding.FragmentProductsBinding
+import ru.nak.ied.retrofitlesson.retrofit.MainApi
 
 class ProductsFragment : Fragment() {
 
+    private lateinit var adapter: ProductAdapter
+    private lateinit var mainApi: MainApi
     private lateinit var binding: FragmentProductsBinding
     private val viewModel: LoginViewModel by activityViewModels()
 
@@ -25,8 +37,39 @@ class ProductsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initRetrofit()
+        initRcView()
         viewModel.token.observe(viewLifecycleOwner) { token ->
-
+            CoroutineScope(Dispatchers.IO).launch {
+                val listProducts = mainApi.getAllProducts(token)
+                // запуск на второстипенном потоке,
+                // так как это фрагмент используем requireActivity().runOnUiThread
+                requireActivity().runOnUiThread {
+                    adapter.submitList(listProducts.products)
+                }
+            }
         }
+    }
+
+    private fun initRetrofit() {
+        // для логинга logcat
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.level = HttpLoggingInterceptor.Level.BODY
+
+        val client = OkHttpClient.Builder()
+            .addInterceptor(interceptor)
+            .build()
+
+        // добавляем клиента
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://dummyjson.com").client(client)
+            .addConverterFactory(GsonConverterFactory.create()).build()
+        mainApi = retrofit.create(MainApi::class.java)
+    }
+
+    private fun initRcView() = with(binding) {
+        adapter = ProductAdapter()
+        rcView.layoutManager = LinearLayoutManager(context)
+        rcView.adapter = adapter
     }
 }
